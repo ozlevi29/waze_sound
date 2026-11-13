@@ -24,7 +24,7 @@ import java.util.List;
 public class SoundService extends Service {
     private static final String CHANNEL = "waze_sound";
     private static final int NOTIF_ID = 1;
-    private static final long RESTORE_DELAY_MS = 3000;
+    private static final long RESTORE_DELAY_MS = 1000;
 
     private AudioManager am;
     private NotificationManager nm;
