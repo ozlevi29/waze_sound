@@ -25,6 +25,8 @@ import android.widget.TextView;
 
 public class MainActivity extends Activity {
     private Prefs prefs;
+    private final android.content.SharedPreferences.OnSharedPreferenceChangeListener prefListener =
+            (sp, key) -> runOnUiThread(() -> this.lastUsage.setText("סוג השמע האחרון שזוהה: " + prefs.lastUsage()));
     private TextView levelText, dndStatus, lastUsage;
 
     @Override
@@ -104,10 +106,17 @@ public class MainActivity extends Activity {
     protected void onResume() {
         super.onResume();
         updateLevel();
+        prefs.listen(prefListener);
         boolean ok = ((NotificationManager) getSystemService(NOTIFICATION_SERVICE)).isNotificationPolicyAccessGranted();
         dndStatus.setText(ok ? "גישה ל'נא לא להפריע': ניתנה ✓"
                 : "גישה ל'נא לא להפריע': לא ניתנה ✗ (במצב רטט לא ישמע)");
         lastUsage.setText("סוג השמע האחרון שזוהה: " + prefs.lastUsage());
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        prefs.unlisten(prefListener);
     }
 
     private void updateLevel() {

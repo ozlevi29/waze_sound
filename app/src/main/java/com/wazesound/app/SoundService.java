@@ -143,6 +143,10 @@ public class SoundService extends Service {
             else am.setSpeakerphoneOn(false);
             am.setMode(savedMode);
         }
+        // Ringer mode (e.g. vibrate) always goes back; volumes only if the user asked for it.
+        if (savedRinger != am.getRingerMode() && nm.isNotificationPolicyAccessGranted()) {
+            try { am.setRingerMode(savedRinger); } catch (SecurityException ignored) { }
+        }
         if (!prefs.restore()) return;
 
         try {
@@ -151,9 +155,6 @@ public class SoundService extends Service {
             am.setStreamVolume(AudioManager.STREAM_NOTIFICATION, savedNotif, 0);
             am.setStreamVolume(AudioManager.STREAM_ALARM, savedAlarm, 0);
         } catch (SecurityException ignored) { }
-        if (savedRinger != am.getRingerMode() && nm.isNotificationPolicyAccessGranted()) {
-            try { am.setRingerMode(savedRinger); } catch (SecurityException ignored) { }
-        }
     }
 
     private void setVolume(int stream, int pct) {

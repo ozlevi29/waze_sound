@@ -25,6 +25,9 @@ final class Prefs {
     boolean restore() { return sp.getBoolean("restore", false); }
     void restore(boolean v) { sp.edit().putBoolean("restore", v).apply(); }
 
+    void listen(SharedPreferences.OnSharedPreferenceChangeListener l) { sp.registerOnSharedPreferenceChangeListener(l); }
+    void unlisten(SharedPreferences.OnSharedPreferenceChangeListener l) { sp.unregisterOnSharedPreferenceChangeListener(l); }
+
     String lastUsage() { return sp.getString("last_usage", "-"); }
     void lastUsage(String s) { sp.edit().putString("last_usage", s).apply(); }
 }
