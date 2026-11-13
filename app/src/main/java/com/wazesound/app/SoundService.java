@@ -34,25 +34,27 @@ public class SoundService extends Service {
     private boolean boosted;
     private int savedMusic, savedVoice, savedNotif, savedAlarm, savedRinger, savedMode;
     private boolean usedCommunicationRoute;
+    private boolean pausedMusic;
 
     private final Runnable restoreTask = this::restoreAll;
 
     private final AudioManager.AudioPlaybackCallback callback = new AudioManager.AudioPlaybackCallback() {
         @Override
         public void onPlaybackConfigChanged(List<AudioPlaybackConfiguration> configs) {
-            boolean nav = false;
+            boolean nav = false, media = false;
             StringBuilder seen = new StringBuilder();
             for (AudioPlaybackConfiguration c : configs) {
                 int usage = c.getAudioAttributes().getUsage();
                 if (seen.length() > 0) seen.append(", ");
                 seen.append(usageName(usage));
                 if (usage == AudioAttributes.USAGE_ASSISTANCE_NAVIGATION_GUIDANCE) nav = true;
+                if (usage == AudioAttributes.USAGE_MEDIA || usage == AudioAttributes.USAGE_GAME) media = true;
             }
             if (seen.length() > 0) prefs.lastUsage(seen.toString());
 
             if (nav) {
                 handler.removeCallbacks(restoreTask);
-                if (!boosted) boost();
+                if (!boosted) boost(media);
             } else if (boosted) {
                 handler.removeCallbacks(restoreTask);
                 handler.postDelayed(restoreTask, RESTORE_DELAY_MS);
@@ -96,8 +98,18 @@ public class SoundService extends Service {
     @Override
     public IBinder onBind(Intent intent) { return null; }
 
-    private void boost() {
+    private void sendMediaKey(int keyCode) {
+        long t = android.os.SystemClock.uptimeMillis();
+        am.dispatchMediaKeyEvent(new android.view.KeyEvent(t, t, android.view.KeyEvent.ACTION_DOWN, keyCode, 0));
+        am.dispatchMediaKeyEvent(new android.view.KeyEvent(t, t, android.view.KeyEvent.ACTION_UP, keyCode, 0));
+    }
+
+    private void boost(boolean musicPlaying) {
         boosted = true;
+        if (musicPlaying && prefs.pauseMusic()) {
+            pausedMusic = true;
+            sendMediaKey(android.view.KeyEvent.KEYCODE_MEDIA_PAUSE);
+        }
         savedMusic = am.getStreamVolume(AudioManager.STREAM_MUSIC);
         savedVoice = am.getStreamVolume(AudioManager.STREAM_VOICE_CALL);
         savedNotif = am.getStreamVolume(AudioManager.STREAM_NOTIFICATION);
@@ -142,6 +154,10 @@ public class SoundService extends Service {
             if (Build.VERSION.SDK_INT >= 31) am.clearCommunicationDevice();
             else am.setSpeakerphoneOn(false);
             am.setMode(savedMode);
+        }
+        if (pausedMusic) {
+            pausedMusic = false;
+            handler.postDelayed(() -> sendMediaKey(android.view.KeyEvent.KEYCODE_MEDIA_PLAY), 400);
         }
         // Ringer mode (e.g. vibrate) always goes back; volumes only if the user asked for it.
         if (savedRinger != am.getRingerMode() && nm.isNotificationPolicyAccessGranted()) {

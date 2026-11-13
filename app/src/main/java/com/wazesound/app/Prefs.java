@@ -25,6 +25,10 @@ final class Prefs {
     boolean leaveVibrate() { return sp.getBoolean("leave_vibrate", true); }
     void leaveVibrate(boolean v) { sp.edit().putBoolean("leave_vibrate", v).apply(); }
 
+    /** Pause music (YouTube etc.) while the prompt plays, resume afterwards. */
+    boolean pauseMusic() { return sp.getBoolean("pause_music", true); }
+    void pauseMusic(boolean v) { sp.edit().putBoolean("pause_music", v).apply(); }
+
     /** Restore previous volumes / ringer mode after the voice prompt ends. */
     boolean restore() { return sp.getBoolean("restore", false); }
     void restore(boolean v) { sp.edit().putBoolean("restore", v).apply(); }
