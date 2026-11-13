@@ -6,6 +6,12 @@
 
 נוצר ע"י [Oz Levi](https://www.linkedin.com/in/ozlevi1/) · חינם וקוד פתוח
 
+<p align="center">
+  <img src="docs/screen1.png" width="250" alt="מסך ראשי">
+  <img src="docs/screen2.png" width="250" alt="אפשרויות">
+  <img src="docs/screen3.png" width="250" alt="הסבר על אפשרות">
+</p>
+
 ## מה זה פותר?
 - הטלפון על רטט ואי אפשר לשמוע את Waze
 - הטלפון מחובר לבלוטוס, אבל אתם רוצים לשמוע את ההנחיות ברמקול הטלפון

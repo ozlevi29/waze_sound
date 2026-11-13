@@ -152,6 +152,7 @@ public class MainActivity extends Activity {
                 "מנגן כמה צפצופים שהמערכת מזהה כדיבור ניווט, כדי לבדוק שהאפליקציה עובדת בלי צורך לנווט. אפשר לנסות את זה על רטט או עם בלוטוס מחובר."));
         lastUsage = text("", 13, false, MUTED);
         lastUsage.setGravity(Gravity.CENTER);
+        lastUsage.setTextDirection(View.TEXT_DIRECTION_RTL);
         lastUsage.setPadding(0, dp(10), 0, 0);
         testCard.addView(lastUsage);
         root.addView(testCard);
