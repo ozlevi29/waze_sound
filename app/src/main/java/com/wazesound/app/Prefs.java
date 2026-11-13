@@ -21,6 +21,10 @@ final class Prefs {
     boolean forceSpeaker() { return sp.getBoolean("speaker", true); }
     void forceSpeaker(boolean v) { sp.edit().putBoolean("speaker", v).apply(); }
 
+    /** Temporarily leave vibrate/silent while the prompt plays. */
+    boolean leaveVibrate() { return sp.getBoolean("leave_vibrate", true); }
+    void leaveVibrate(boolean v) { sp.edit().putBoolean("leave_vibrate", v).apply(); }
+
     /** Restore previous volumes / ringer mode after the voice prompt ends. */
     boolean restore() { return sp.getBoolean("restore", false); }
     void restore(boolean v) { sp.edit().putBoolean("restore", v).apply(); }

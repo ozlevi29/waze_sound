@@ -67,6 +67,8 @@ public class MainActivity extends Activity {
 
         root.addView(sw("לנתב לרמקול הטלפון גם כשמחובר בלוטוס/אוזניות", prefs.forceSpeaker(),
                 (v, on) -> prefs.forceSpeaker(on)));
+        root.addView(sw("להוציא מרטט/שקט בזמן הדיבור (ולהחזיר אחריו)", prefs.leaveVibrate(),
+                (v, on) -> prefs.leaveVibrate(on)));
         root.addView(sw("להחזיר עוצמות ומצב צלצול אחרי הדיבור", prefs.restore(),
                 (v, on) -> prefs.restore(on)));
 

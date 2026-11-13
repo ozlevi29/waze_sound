@@ -106,7 +106,7 @@ public class SoundService extends Service {
         savedMode = am.getMode();
 
         // Leave silent / vibrate (needs "Do Not Disturb access").
-        if (savedRinger != AudioManager.RINGER_MODE_NORMAL && nm.isNotificationPolicyAccessGranted()) {
+        if (prefs.leaveVibrate() && savedRinger != AudioManager.RINGER_MODE_NORMAL && nm.isNotificationPolicyAccessGranted()) {
             try { am.setRingerMode(AudioManager.RINGER_MODE_NORMAL); } catch (SecurityException ignored) { }
         }
 
