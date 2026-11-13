@@ -47,11 +47,13 @@ public class MainActivity extends Activity {
             prefs.enabled(on);
             if (on) startService(); else stopService(new Intent(this, SoundService.class));
         });
-        root.addView(enable);
+        root.addView(withInfo(enable, "הפעל",
+                "מדליק את האפליקציה. כשהיא פועלת היא מזהה מתי Waze מדברת ומתאימה את השמע. בהתראה בסרגל העליון תראה שהיא פעילה."));
 
         levelText = text("", 18, true);
         levelText.setPadding(0, dp(24), 0, 0);
-        root.addView(levelText);
+        root.addView(withInfo(levelText, "עוצמת דיבור",
+                "העוצמה שאליה תעלה האפליקציה את השמע בזמן שהדיבור של Waze מתנגן. 100% הכי חזק. אם זה חזק מדי, בחר ערך נמוך יותר, למשל 80%."));
         SeekBar seek = new SeekBar(this);
         seek.setMax(9); // 0..9 -> 10%..100%
         seek.setProgress(Math.max(0, prefs.level() / 10 - 1));
@@ -65,14 +67,18 @@ public class MainActivity extends Activity {
         });
         root.addView(seek);
 
-        root.addView(sw("לנתב לרמקול הטלפון גם כשמחובר בלוטוס/אוזניות", prefs.forceSpeaker(),
-                (v, on) -> prefs.forceSpeaker(on)));
-        root.addView(sw("להשהות מוזיקה/יוטיוב בזמן הדיבור ולהמשיך אחריו", prefs.pauseMusic(),
-                (v, on) -> prefs.pauseMusic(on)));
-        root.addView(sw("להוציא מרטט/שקט בזמן הדיבור (ולהחזיר אחריו)", prefs.leaveVibrate(),
-                (v, on) -> prefs.leaveVibrate(on)));
-        root.addView(sw("להחזיר עוצמות ומצב צלצול אחרי הדיבור", prefs.restore(),
-                (v, on) -> prefs.restore(on)));
+        root.addView(withInfo(sw("לנתב לרמקול הטלפון גם כשמחובר בלוטוס/אוזניות", prefs.forceSpeaker(),
+                (v, on) -> prefs.forceSpeaker(on)), "ניתוב לרמקול הטלפון",
+                "כשמחוברים לבלוטוס של הרכב או לאוזניות, הדיבור של Waze יישמע ברמקול של הטלפון ולא שם. בזמן הדיבור כל השמע עובר לרמקול, ולכן מומלץ להשאיר דלוקה גם את השהיית המוזיקה. אם כבוי, הדיבור יישמע בהתקן המחובר."));
+        root.addView(withInfo(sw("להשהות מוזיקה/יוטיוב בזמן הדיבור ולהמשיך אחריו", prefs.pauseMusic(),
+                (v, on) -> prefs.pauseMusic(on)), "השהיית מוזיקה",
+                "כשמנגן שיר או סרטון והדיבור של Waze מתחיל, האפליקציה עוצרת אותם, ואחרי שהדיבור נגמר היא ממשיכה לנגן. כך השיר לא יישמע ברמקול הטלפון בזמן ההנחיה."));
+        root.addView(withInfo(sw("להוציא מרטט/שקט בזמן הדיבור (ולהחזיר אחריו)", prefs.leaveVibrate(),
+                (v, on) -> prefs.leaveVibrate(on)), "יציאה מרטט/שקט",
+                "אם הטלפון על רטט או שקט, הוא עובר זמנית למצב רגיל בזמן הדיבור, ואחרי הדיבור חוזר למצב הקודם. נדרשת גישה ל\"נא לא להפריע\". אם הדיבור נשמע גם בלי זה, אפשר לכבות את האפשרות ולהשאיר את הטלפון על רטט כל הזמן."));
+        root.addView(withInfo(sw("להחזיר עוצמות ומצב צלצול אחרי הדיבור", prefs.restore(),
+                (v, on) -> prefs.restore(on)), "החזרת עוצמות",
+                "אחרי הדיבור מחזירה את עוצמות המדיה, השיחה, ההתראות והאזעקות לערכים שהיו לפני. כבוי כברירת מחדל, כלומר העוצמות נשארות כפי שהאפליקציה קבעה אותן."));
 
         dndStatus = text("", 14, false);
         dndStatus.setPadding(0, dp(24), 0, 0);
@@ -80,7 +86,8 @@ public class MainActivity extends Activity {
         Button dnd = new Button(this);
         dnd.setText("אפשר גישה ל'נא לא להפריע' (נדרש לרטט/שקט)");
         dnd.setOnClickListener(v -> startActivity(new Intent(Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS)));
-        root.addView(dnd);
+        root.addView(withInfo(dnd, "גישה ל'נא לא להפריע'",
+                "הרשאה של אנדרואיד שנדרשת כדי שהאפליקציה תוכל להוציא את הטלפון ממצב רטט או שקט. בלעדיה הדיבור לא יישמע כשהטלפון על רטט. לוחצים, מוצאים את Waze Speaker ברשימה ומפעילים."));
 
         Button test = new Button(this);
         test.setText("בדיקה: נגן צליל ניווט");
@@ -88,7 +95,8 @@ public class MainActivity extends Activity {
             if (!prefs.enabled()) { prefs.enabled(true); enable.setChecked(true); }
             playTestTone();
         });
-        root.addView(test);
+        root.addView(withInfo(test, "בדיקה",
+                "מנגן כמה צפצופים שהמערכת מזהה כדיבור ניווט, כדי לבדוק שהאפליקציה עובדת בלי צורך לנווט. אפשר לנסות את זה על רטט או עם בלוטוס מחובר."));
 
         lastUsage = text("", 13, false);
         lastUsage.setTextColor(Color.GRAY);
@@ -162,6 +170,24 @@ public class MainActivity extends Activity {
             try { Thread.sleep(2300); } catch (InterruptedException ignored) { }
             t.release();
         }).start();
+    }
+
+    /** Wraps a view with an (i) icon on its side that opens an explanation dialog. */
+    private View withInfo(View main, String title, String info) {
+        LinearLayout row = new LinearLayout(this);
+        row.setOrientation(LinearLayout.HORIZONTAL);
+        row.setGravity(Gravity.CENTER_VERTICAL);
+        row.addView(main, new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f));
+        TextView i = new TextView(this);
+        i.setText("ⓘ");
+        i.setTextSize(24);
+        i.setTextColor(Color.parseColor("#0A66C2"));
+        i.setPadding(dp(12), dp(8), dp(4), dp(8));
+        i.setContentDescription("הסבר");
+        i.setOnClickListener(v -> new android.app.AlertDialog.Builder(this)
+                .setTitle(title).setMessage(info).setPositiveButton("הבנתי", null).show());
+        row.addView(i);
+        return row;
     }
 
     private TextView text(String s, int sp, boolean bold) {
