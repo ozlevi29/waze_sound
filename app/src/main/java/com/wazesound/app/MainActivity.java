@@ -95,6 +95,14 @@ public class MainActivity extends Activity {
         lastUsage.setPadding(0, dp(16), 0, 0);
         root.addView(lastUsage);
 
+        TextView credit = text("נוצר ע\"י Oz Levi", 14, true);
+        credit.setTextColor(Color.parseColor("#0A66C2"));
+        credit.setPaintFlags(credit.getPaintFlags() | android.graphics.Paint.UNDERLINE_TEXT_FLAG);
+        credit.setPadding(0, dp(32), 0, dp(16));
+        credit.setOnClickListener(v -> startActivity(new Intent(Intent.ACTION_VIEW,
+                android.net.Uri.parse("https://www.linkedin.com/in/ozlevi1/"))));
+        root.addView(credit);
+
         ScrollView sv = new ScrollView(this);
         sv.addView(root);
         setContentView(sv);
