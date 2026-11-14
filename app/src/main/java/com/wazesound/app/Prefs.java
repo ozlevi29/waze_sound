@@ -33,6 +33,14 @@ final class Prefs {
     boolean boostNotif() { return sp.getBoolean("boost_notif", true); }
     void boostNotif(boolean v) { sp.edit().putBoolean("boost_notif", v).apply(); }
 
+    /** Set by the test button so the next prompt counts as the start of a new navigation. */
+    void forceNewSession() { sp.edit().putBoolean("force_new", true).apply(); }
+    boolean consumeNewSession() {
+        boolean v = sp.getBoolean("force_new", false);
+        if (v) sp.edit().putBoolean("force_new", false).apply();
+        return v;
+    }
+
     /** Restore previous volumes / ringer mode after the voice prompt ends. */
     boolean restore() { return sp.getBoolean("restore", false); }
     void restore(boolean v) { sp.edit().putBoolean("restore", v).apply(); }

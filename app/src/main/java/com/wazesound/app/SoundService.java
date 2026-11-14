@@ -35,6 +35,9 @@ public class SoundService extends Service {
     private int savedMusic, savedVoice, savedNotif, savedAlarm, savedRinger, savedMode;
     private boolean usedCommunicationRoute;
     private boolean pausedMusic;
+    /** Volumes are set once per navigation session; the user's manual changes then stay. */
+    private static final long SESSION_GAP_MS = 30 * 60 * 1000;
+    private long lastNavEnd; // elapsedRealtime of the end of the last prompt, 0 = none yet
 
     private final Runnable restoreTask = this::restoreAll;
 
@@ -111,6 +114,8 @@ public class SoundService extends Service {
 
     private void boost(boolean musicPlaying) {
         boosted = true;
+        boolean newSession = prefs.consumeNewSession() || lastNavEnd == 0
+                || android.os.SystemClock.elapsedRealtime() - lastNavEnd > SESSION_GAP_MS;
         if (musicPlaying && prefs.pauseMusic()) {
             pausedMusic = true;
             sendMediaKey(android.view.KeyEvent.KEYCODE_MEDIA_PAUSE);
@@ -144,6 +149,7 @@ public class SoundService extends Service {
         }
 
         int pct = prefs.level();
+        if (!newSession && !prefs.restore()) return; // keep whatever the user set during this navigation
         setVolume(AudioManager.STREAM_MUSIC, pct);
         setVolume(AudioManager.STREAM_VOICE_CALL, pct);
         if (prefs.boostNotif()) {
@@ -155,6 +161,7 @@ public class SoundService extends Service {
     private void restoreAll() {
         if (!boosted) return;
         boosted = false;
+        lastNavEnd = android.os.SystemClock.elapsedRealtime();
 
         if (usedCommunicationRoute) {
             usedCommunicationRoute = false;

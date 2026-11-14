@@ -89,7 +89,7 @@ public class MainActivity extends Activity {
         LinearLayout volCard = card();
         TextView volLabel = text("עוצמת דיבור", 16, true, TEXT);
         volCard.addView(row(volLabel, null, "עוצמת דיבור",
-                "העוצמה שאליה תעלה האפליקציה את השמע בזמן שהדיבור של Waze מתנגן. 100% הכי חזק. אם זה חזק מדי, בחר ערך נמוך יותר, למשל 80%."));
+                "העוצמה שאליה תעלה האפליקציה את השמע כשהדיבור של Waze מתחיל, בתחילת כל ניווט. 100% הכי חזק. אם תנמיך ידנית בטלפון במהלך הניווט, ההנמכה תישאר עד הניווט הבא (ניווט חדש = לפחות חצי שעה בלי הנחיות)."));
         levelText = text("", 48, true, PRIMARY);
         levelText.setGravity(Gravity.CENTER);
         volCard.addView(levelText);
@@ -162,6 +162,7 @@ public class MainActivity extends Activity {
         Button test = button("🔔  בדיקה: נגן צליל ניווט", true);
         test.setOnClickListener(v -> {
             if (!prefs.enabled()) { prefs.enabled(true); enable.setChecked(true); }
+            prefs.forceNewSession(); // test behaves like the start of a new navigation
             playTestTone();
         });
         testCard.addView(row(test, null, "בדיקה",
