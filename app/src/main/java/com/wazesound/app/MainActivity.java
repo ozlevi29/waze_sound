@@ -141,6 +141,18 @@ public class MainActivity extends Activity {
         perm.addView(dnd);
         root.addView(perm);
 
+        // ---- Background notification card ----
+        LinearLayout notif = card();
+        notif.addView(row(text("ההתראה הקבועה של האפליקציה", 16, true, TEXT), null,
+                "ההתראה הקבועה",
+                "אנדרואיד מחייבת התראה כל עוד האפליקציה פועלת ברקע. היא כבר מוסתרת ממסך הנעילה ומוגדרת כשקטה. כדי להעלים אותה לגמרי מסרגל ההתראות, לחצו על הכפתור וכבו את ההתראות של 'Waze Speaker פעיל ברקע'. האפליקציה תמשיך לעבוד כרגיל."));
+        Button hide = button("הסתר את ההתראה", false);
+        hide.setOnClickListener(v -> startActivity(new Intent(Settings.ACTION_CHANNEL_NOTIFICATION_SETTINGS)
+                .putExtra(Settings.EXTRA_APP_PACKAGE, getPackageName())
+                .putExtra(Settings.EXTRA_CHANNEL_ID, SoundService.CHANNEL)));
+        notif.addView(hide);
+        root.addView(notif);
+
         // ---- Test card ----
         LinearLayout testCard = card();
         Button test = button("🔔  בדיקה: נגן צליל ניווט", true);

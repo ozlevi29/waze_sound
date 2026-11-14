@@ -22,7 +22,7 @@ import java.util.List;
  * output to the phone speaker. Afterwards everything is put back.
  */
 public class SoundService extends Service {
-    private static final String CHANNEL = "waze_sound";
+    static final String CHANNEL = "waze_sound_quiet";
     private static final int NOTIF_ID = 1;
     private static final long RESTORE_DELAY_MS = 1000;
 
@@ -69,9 +69,14 @@ public class SoundService extends Service {
         nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         prefs = new Prefs(this);
 
-        nm.createNotificationChannel(new NotificationChannel(
-                CHANNEL, "Waze Speaker", NotificationManager.IMPORTANCE_MIN));
+        nm.deleteNotificationChannel("waze_sound"); // old, louder channel
+        NotificationChannel ch = new NotificationChannel(
+                CHANNEL, "Waze Speaker פעיל ברקע", NotificationManager.IMPORTANCE_MIN);
+        ch.setLockscreenVisibility(Notification.VISIBILITY_SECRET); // nothing on the lock screen
+        ch.setShowBadge(false);
+        nm.createNotificationChannel(ch);
         Notification n = new Notification.Builder(this, CHANNEL)
+                .setVisibility(Notification.VISIBILITY_SECRET)
                 .setContentTitle("Waze Speaker פעיל")
                 .setContentText("מאזין לדיבור של ניווט")
                 .setSmallIcon(android.R.drawable.ic_lock_silent_mode_off)
