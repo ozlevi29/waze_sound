@@ -146,8 +146,10 @@ public class SoundService extends Service {
         int pct = prefs.level();
         setVolume(AudioManager.STREAM_MUSIC, pct);
         setVolume(AudioManager.STREAM_VOICE_CALL, pct);
-        setVolume(AudioManager.STREAM_NOTIFICATION, pct);
-        setVolume(AudioManager.STREAM_ALARM, pct);
+        if (prefs.boostNotif()) {
+            setVolume(AudioManager.STREAM_NOTIFICATION, pct);
+            setVolume(AudioManager.STREAM_ALARM, pct);
+        }
     }
 
     private void restoreAll() {

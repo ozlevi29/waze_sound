@@ -29,6 +29,10 @@ final class Prefs {
     boolean pauseMusic() { return sp.getBoolean("pause_music", true); }
     void pauseMusic(boolean v) { sp.edit().putBoolean("pause_music", v).apply(); }
 
+    /** Also raise notification + alarm volume (some phones play navigation on those streams). */
+    boolean boostNotif() { return sp.getBoolean("boost_notif", true); }
+    void boostNotif(boolean v) { sp.edit().putBoolean("boost_notif", v).apply(); }
+
     /** Restore previous volumes / ringer mode after the voice prompt ends. */
     boolean restore() { return sp.getBoolean("restore", false); }
     void restore(boolean v) { sp.edit().putBoolean("restore", v).apply(); }
